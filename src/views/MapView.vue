@@ -61,8 +61,8 @@ export default {
     components: {DetailCard, BmScale, BmLabel, BmMarker, BmNavigation, ListCard, BaiduMap},
     data() {
         return {
-            zoom: 17,
-            center: {lng: 120.369036, lat: 30.327401},
+            zoom: 12,
+            center: {lng: 120.170965, lat: 30.274355},
             showMarker: false,
             content: '',
             list: [],
@@ -92,17 +92,20 @@ export default {
         },
         mouseClicked(uid) {
             let place = this.list.filter((place) => place.uid === uid)[0]
-            this.center = place.location
             this.content = place.name
             this.showMarker = true
 
-            this.openDetailCard(uid)
-
             this.changePage()
+            this.openDetailCard(uid)
+            this.zoom = 18
+            this.center = place.location
         },
 
         changePage() {
             this.showMarker = true
+            this.zoom = 12
+            this.closeDetailCard()
+            this.center = {lng: 120.170965, lat: 30.274355}
 
             getPlaceList(this.pageSize, this.currentPage - 1)
                 .then(res => this.list = res.data.results)
@@ -135,6 +138,7 @@ export default {
 
 .pagination-container {
     margin-top: 12px;
+    margin-bottom: 10px;
 }
 
 .detail-card-container {

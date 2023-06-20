@@ -25,6 +25,10 @@
             </span>
         </template>
 
+        <template #action>
+            <a-button>获取距离</a-button>
+        </template>
+
         <div class="general" v-if="key === 'tab1'">
             <div v-if="detailInfo.content_tag">
                 <a-tag color="purple" v-for="tag in detailInfo.content_tag.split(';')">{{ tag }}</a-tag>

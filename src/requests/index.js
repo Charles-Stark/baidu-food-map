@@ -1,11 +1,12 @@
 import request from "@/requests/request";
 
+// const ak = 'fdjLW98yyX2vP5ndvu7hynahuDQp9wsh'
 const ak = 'fnNTTwnc6Zu0T1rMTG0NvD9GFH17kKik'
 
 export function getPlaceList(pageSize, currentPage) {
     return request({
         url: '/place/v2/search?query=美食&tag=美食&region=杭州&output=json&scope=2&ak=' + ak +
-            '&page_size=' + pageSize + '&page_num=' + currentPage + "&center=30.327401,120.369036&filter=sort_name:distance|sort_rule:1",
+            '&page_size=' + pageSize + '&page_num=' + currentPage + "&city_limit=true",
         method: 'GET',
     })
 }
