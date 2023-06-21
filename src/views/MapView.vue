@@ -51,7 +51,12 @@
                                       :labelStyle="{color: 'black', border: '1px solid black', fontSize : '12px'}"
                                       :offset="{width: 0, height: -40}"/>
                         </bm-marker>
-                        <bm-scale anchor="BMAP_ANCHOR_BOTTOM_RIGHT"></bm-scale>
+                        <bm-scale anchor="BMAP_ANCHOR_BOTTOM_LEFT"></bm-scale>
+                        <bm-map-type
+                                :map-types="['BMAP_NORMAL_MAP', 'BMAP_SATELLITE_MAP']"
+                                anchor="BMAP_ANCHOR_BOTTOM_RIGHT"
+                                offset="0"
+                        ></bm-map-type>
                     </baidu-map>
                 </a-layout-content>
             </a-layout>
@@ -60,14 +65,14 @@
 </template>
 
 <script>
-import {BaiduMap, BmLabel, BmMarker, BmScale, BmNavigation} from "vue-baidu-map-3x";
+import {BaiduMap, BmLabel, BmMarker, BmScale, BmNavigation, BmMapType} from "vue-baidu-map-3x";
 import {getDetailedInfo, getPlaceList} from "@/requests";
 import ListCard from "@/components/ListCard.vue";
 import DetailCard from "@/components/DetailCard.vue";
 
 export default {
     name: "MapView",
-    components: {DetailCard, BmScale, BmLabel, BmMarker, BmNavigation, ListCard, BaiduMap},
+    components: {BmMapType, DetailCard, BmScale, BmLabel, BmMarker, BmNavigation, ListCard, BaiduMap},
     data() {
         return {
             zoom: 12,

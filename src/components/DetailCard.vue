@@ -15,10 +15,6 @@
             <close-outlined @click="closeCard" style="color: black"/>
         </template>
 
-        <!--        <template #cover>-->
-        <!--            <img src="">-->
-        <!--        </template>-->
-
         <template #customTab="item">
             <span v-if="item.key === '概览'">
                 {{ item.key }}
@@ -33,22 +29,25 @@
             <div v-if="detailInfo.content_tag">
                 <a-tag color="purple" v-for="tag in detailInfo.content_tag.split(';')">{{ tag }}</a-tag>
             </div>
-            <div v-if="result.address"><span class="label">地址:&nbsp;&nbsp;</span><span class="info">{{
+            <div v-if="result.address"><span class="label"><home-outlined/>&nbsp;&nbsp;地址:&nbsp;&nbsp;</span><span
+                    class="info">{{
                 result.address
                 }}</span>
             </div>
-            <div v-if="result.telephone"><span class="label">电话号码:&nbsp;&nbsp;</span><span class="info">
+            <div v-if="result.telephone"><span class="label"><phone-outlined/>&nbsp;&nbsp;电话号码:&nbsp;&nbsp;</span><span
+                    class="info">
                 <a :href="'tel:' + result.telephone">{{ result.telephone }}</a>
             </span></div>
-            <div v-if="detailInfo.price"><span class="label">人均消费:&nbsp;&nbsp;¥&nbsp;</span><span class="info">{{
+            <div v-if="detailInfo.price"><span class="label"><pay-circle-outlined/>&nbsp;&nbsp;人均消费:&nbsp;&nbsp;¥&nbsp;</span><span
+                    class="info">{{
                 detailInfo.price
                 }}</span>
             </div>
-            <div v-if="detailInfo.featured_service"><span class="label">服务选项:&nbsp;&nbsp;</span>
+            <div v-if="detailInfo.featured_service"><span class="label"><customer-service-outlined/>&nbsp;&nbsp;服务选项:&nbsp;&nbsp;</span>
                 <span class="info" v-for="service in detailInfo.featured_service">
                     <a-tag color="red">{{ service }}</a-tag>
                 </span></div>
-            <div v-if="detailInfo.atmosphere"><span class="label">适合情景:&nbsp;&nbsp;</span>
+            <div v-if="detailInfo.atmosphere"><span class="label"><team-outlined/>&nbsp;&nbsp;适合情景:&nbsp;&nbsp;</span>
                 <span class="info" v-for="at in detailInfo.atmosphere">
                     <a-tag color="blue">{{ at }}</a-tag>
                 </span>
@@ -81,10 +80,23 @@
 import {getDetailedInfo} from "@/requests";
 import closeOutlined from "@ant-design/icons-vue/lib/icons/CloseOutlined";
 import exportOutlined from "@ant-design/icons-vue/lib/icons/ExportOutlined";
+import homeOutlined from "@ant-design/icons-vue/lib/icons/HomeOutlined";
+import phoneOutlined from "@ant-design/icons-vue/lib/icons/PhoneOutlined";
+import payCircleOutlined from "@ant-design/icons-vue/lib/icons/PayCircleOutlined";
+import customerServiceOutlined from "@ant-design/icons-vue/lib/icons/CustomerServiceOutlined";
+import teamOutlined from "@ant-design/icons-vue/lib/icons/TeamOutlined";
 
 export default {
     name: "DetailCard",
-    components: {closeOutlined, exportOutlined},
+    components: {
+        closeOutlined,
+        exportOutlined,
+        homeOutlined,
+        phoneOutlined,
+        payCircleOutlined,
+        customerServiceOutlined,
+        teamOutlined
+    },
     props: ['uid'],
     data() {
         return {

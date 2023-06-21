@@ -278,5 +278,5 @@ export default {
 }
 </style>
 
-<!-- TODO: change map type, icons on detail card, distance calculation -->
+<!-- TODO: distance calculation, search box -->
 <!-- TODO: move center when detail card open -->
