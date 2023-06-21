@@ -6,7 +6,7 @@
                 @back="() => $router.go(-1)"
         >
             <template #extra>
-                <a-button type="primary" href="">在地图中显示</a-button>
+                <a-button type="primary" @click="toMap">在地图中显示</a-button>
             </template>
         </a-page-header>
 
@@ -41,6 +41,7 @@ export default {
             title: '',
             show: false,
             list: ['知味观', '外婆家', '张生记', '咬不得高祖生煎', '老头儿油爆虾', '新白鹿餐厅'],
+            uid: ['df06a546ce54c60af7231063', '0a168cb5ea4da5db8f55ec86', '3c0ea7c5249e2b85fbf0cb7e', '2848ffd61f33751649cc4a8b', 'c6a3ff1d87d9c7240b69d9ba', 'dffd46425bd54eab3c9a5e18'],
             content: {},
             contents: [
                 {
@@ -98,6 +99,13 @@ export default {
                     ]
                 },
             ]
+        }
+    },
+    methods: {
+        toMap() {
+            this.$router.push({
+                path: `/map/${this.uid[this.list.indexOf(this.title)]}`
+            })
         }
     },
     mounted() {

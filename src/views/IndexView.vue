@@ -185,7 +185,7 @@ export default {
                 },
             ],
             list: ['知味观', '外婆家', '张生记', '咬不得高祖生煎', '老头儿油爆虾', '新白鹿餐厅'],
-            uid: ['df06a546ce54c60af7231063', '0a168cb5ea4da5db8f55ec86', 3, '2848ffd61f33751649cc4a8b', 5, 'dffd46425bd54eab3c9a5e18'],
+            uid: ['df06a546ce54c60af7231063', '0a168cb5ea4da5db8f55ec86', '3c0ea7c5249e2b85fbf0cb7e', '2848ffd61f33751649cc4a8b', 'c6a3ff1d87d9c7240b69d9ba', 'dffd46425bd54eab3c9a5e18'],
         }
     },
     methods: {
@@ -279,3 +279,4 @@ export default {
 </style>
 
 <!-- TODO: change map type, icons on detail card, distance calculation -->
+<!-- TODO: move center when detail card open -->
