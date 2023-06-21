@@ -42,6 +42,15 @@
                                       :labelStyle="{color: 'black', border: '1px solid black', fontSize : '12px'}"
                                       :offset="{width: 0, height: -40}"/>
                         </bm-marker>
+                        <bm-marker v-if="showPoint" :position="point.location"
+                                   :dragging="false"
+                                   @click="markerClicked(point)"
+                                   animation="BMAP_ANIMATION_BOUNCE">
+                            <bm-label :content="content"
+                                      @click="markerClicked(point)"
+                                      :labelStyle="{color: 'black', border: '1px solid black', fontSize : '12px'}"
+                                      :offset="{width: 0, height: -40}"/>
+                        </bm-marker>
                         <bm-scale anchor="BMAP_ANCHOR_BOTTOM_RIGHT"></bm-scale>
                     </baidu-map>
                 </a-layout-content>
@@ -52,7 +61,7 @@
 
 <script>
 import {BaiduMap, BmLabel, BmMarker, BmScale, BmNavigation} from "vue-baidu-map-3x";
-import {getPlaceList} from "@/requests";
+import {getDetailedInfo, getPlaceList} from "@/requests";
 import ListCard from "@/components/ListCard.vue";
 import DetailCard from "@/components/DetailCard.vue";
 
@@ -64,6 +73,8 @@ export default {
             zoom: 12,
             center: {lng: 120.170965, lat: 30.274355},
             showMarker: false,
+            showPoint: false,
+            point: {},
             content: '',
             list: [],
             currentPage: 1,
@@ -88,30 +99,45 @@ export default {
     methods: {
         mapReady(e) {
             this.map = e.map
-            this.changePage()
+
+            if (typeof this.$route.params.uid !== 'undefined') {
+                let uid = this.$route.params.uid
+                getDetailedInfo(uid)
+                    .then(res => {
+                        this.point = res.data.result
+                        this.content = res.data.result.name
+
+                        this.openDetailCard(uid)
+                        this.zoom = 18
+                        this.center = res.data.result.location
+                        this.showPoint = true
+                    })
+                    .catch(err => console.log(err.message))
+            } else {
+                this.changePage()
+            }
         },
         mouseClicked(uid) {
+            this.showPoint = false
             let place = this.list.filter((place) => place.uid === uid)[0]
             this.content = place.name
             this.showMarker = true
 
-            this.changePage()
             this.openDetailCard(uid)
             this.zoom = 18
             this.center = place.location
         },
 
         changePage() {
+            this.showPoint = false
             this.showMarker = true
-            this.zoom = 12
             this.closeDetailCard()
+            this.zoom = 12
             this.center = {lng: 120.170965, lat: 30.274355}
 
             getPlaceList(this.pageSize, this.currentPage - 1)
                 .then(res => this.list = res.data.results)
                 .catch(err => console.log(err.message))
-
-            // this.map.clearOverlays()
         },
 
         openDetailCard(uid) {
@@ -126,7 +152,7 @@ export default {
             this.openDetailCard(place.uid)
             this.center = place.location
             this.content = place.name
-        }
+        },
     }
 }
 </script>
