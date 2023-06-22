@@ -23,7 +23,7 @@
             </a-layout-sider>
 
             <div class="detail-card-container" v-if="showDetailCard">
-                <detail-card @closeCard="closeDetailCard" :uid="clickedUID"/>
+                <detail-card @closeCard="closeDetailCard" :uid="clickedUID" :location="center"/>
             </div>
 
             <a-layout style="padding: 0">

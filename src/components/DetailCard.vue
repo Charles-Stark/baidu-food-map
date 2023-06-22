@@ -21,10 +21,6 @@
             </span>
         </template>
 
-        <template #action>
-            <a-button>获取距离</a-button>
-        </template>
-
         <div class="general" v-if="key === 'tab1'">
             <div v-if="detailInfo.content_tag">
                 <a-tag color="purple" v-for="tag in detailInfo.content_tag.split(';')">{{ tag }}</a-tag>
@@ -73,11 +69,24 @@
             </div>
         </div>
 
+        <div v-if="key === 'tab3'">
+            <a-radio-group v-model:value="transportType" @change="getRoutes">
+                <a-radio-button value="driving">驾车</a-radio-button>
+                <a-radio-button value="riding">骑行</a-radio-button>
+                <a-radio-button value="walking">步行</a-radio-button>
+            </a-radio-group>
+
+            <br>
+            distance: {{ distance }}<br>
+            duration: {{ duration }}<br>
+            traffic_condition: {{ traffic_condition_str[traffic_condition] }}<br>
+        </div>
+
     </a-card>
 </template>
 
 <script>
-import {getDetailedInfo} from "@/requests";
+import {getDetailedInfo, getRoutesInfo} from "@/requests";
 import closeOutlined from "@ant-design/icons-vue/lib/icons/CloseOutlined";
 import exportOutlined from "@ant-design/icons-vue/lib/icons/ExportOutlined";
 import homeOutlined from "@ant-design/icons-vue/lib/icons/HomeOutlined";
@@ -95,9 +104,9 @@ export default {
         phoneOutlined,
         payCircleOutlined,
         customerServiceOutlined,
-        teamOutlined
+        teamOutlined,
     },
-    props: ['uid'],
+    props: ['uid', 'location'],
     data() {
         return {
             result: {},
@@ -109,9 +118,21 @@ export default {
                 }, {
                     key: 'tab2',
                     tab: '评价',
+                }, {
+                    key: 'tab3',
+                    tab: '出行',
                 }
             ],
             key: 'tab1',
+            transportType: 'driving',
+            traffic_condition_str: ['暂无路况信息', '畅通', '缓行', '拥堵', '严重拥堵'],
+            distance: 0,
+            duration: 0,
+            traffic_condition: 0,
+            origin: {lng: '120.369036', lat: '30.327401'},
+            destination: {},
+            origin_uid: 'd8dba01f8edc68ed3be4a621',
+            destination_uid: '',
         }
     },
     methods: {
@@ -120,24 +141,40 @@ export default {
         },
         closeCard() {
             this.$emit('closeCard')
-        }
-    },
-    mounted() {
-        getDetailedInfo(this.uid)
-            .then(res => {
-                this.result = res.data.result
-                this.detailInfo = res.data.result.detail_info
-            })
-            .catch(err => console.log(err.message))
-    },
-    watch: {
-        "uid"(newVal, oldVal) {
-            getDetailedInfo(newVal)
+        },
+        getDetail(uid) {
+            getDetailedInfo(uid)
                 .then(res => {
                     this.result = res.data.result
                     this.detailInfo = res.data.result.detail_info
                 })
                 .catch(err => console.log(err.message))
+        },
+        getRoutes() {
+            getRoutesInfo(
+                this.transportType,
+                this.origin,
+                this.destination,
+                this.origin_uid,
+                this.destination_uid)
+                .then(res => {
+                    let route = res.data.result.routes[0]
+                    this.distance = route.distance
+                    this.duration = route.duration
+                    this.traffic_condition = route.traffic_condition
+                })
+                .catch(err => console.log(err.message))
+        },
+    },
+    mounted() {
+        this.getDetail(this.uid)
+        this.destination = this.location
+        this.destination_uid = this.uid
+        this.getRoutes()
+    },
+    watch: {
+        "uid"(newVal, oldVal) {
+            this.getDetail(newVal)
         }
     }
 }

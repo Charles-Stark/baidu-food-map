@@ -13,7 +13,21 @@ export function getPlaceList(pageSize, currentPage) {
 
 export function getDetailedInfo(uid) {
     return request({
-        url: 'place/v2/detail?uid=' + uid + '&output=json&scope=2&ak=' + ak,
+        url: '/place/v2/detail?uid=' + uid + '&output=json&scope=2&ak=' + ak,
         method: 'GET',
+    })
+}
+
+export function getRoutesInfo(transportType, origin, destination, origin_uid, destination_uid) {
+    return request({
+        url: '/directionlite/v1/' + transportType,
+        method: 'GET',
+        params: {
+            origin: origin.lat + ',' + origin.lng,
+            destination: destination.lat + ',' + destination.lng,
+            ak: ak,
+            origin_uid: origin_uid === null ? '' : origin_uid,
+            destination_uid: destination_uid === null ? '' : destination_uid,
+        },
     })
 }
