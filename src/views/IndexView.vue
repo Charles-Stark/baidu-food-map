@@ -278,5 +278,4 @@ export default {
 }
 </style>
 
-<!-- TODO: distance calculation, search box -->
-<!-- TODO: move center when detail card open -->
+<!-- TODO: distance calculation, search box, relocation & radius -->
