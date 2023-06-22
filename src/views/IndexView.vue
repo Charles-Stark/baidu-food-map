@@ -275,5 +275,3 @@ export default {
     float: right;
 }
 </style>
-
-<!-- TODO: distance calculation, search box, relocation & radius -->

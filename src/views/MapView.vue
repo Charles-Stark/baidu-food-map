@@ -23,7 +23,9 @@
             </a-layout-sider>
 
             <div class="detail-card-container" v-if="showDetailCard">
-                <detail-card @closeCard="closeDetailCard" :uid="clickedUID" :location="center"/>
+                <detail-card @closeCard="closeDetailCard" @choosePoint="choosePoint"
+                             @showCJLU="toShowCJLU"
+                             v-model:chosenPoint="chosenPoint" :uid="clickedUID" :location="center"/>
             </div>
 
             <a-layout style="padding: 0">
@@ -48,6 +50,21 @@
                                    animation="BMAP_ANIMATION_BOUNCE">
                             <bm-label :content="content"
                                       @click="markerClicked(point)"
+                                      :labelStyle="{color: 'black', border: '1px solid black', fontSize : '12px'}"
+                                      :offset="{width: 0, height: -40}"/>
+                        </bm-marker>
+                        <bm-marker v-if="showChooser" v-model:position="chosenPoint"
+                                   :dragging="true"
+                                   @dragend="afterDrag($event)"
+                                   animation="">
+                            <bm-label content="拖动选择起点"
+                                      :labelStyle="{color: 'black', border: '1px solid black', fontSize : '12px'}"
+                                      :offset="{width: 0, height: -22}"/>
+                        </bm-marker>
+                        <bm-marker v-if="showCJLU" :position="{lng: '120.369036', lat: '30.327401'}"
+                                   :dragging="false"
+                                   animation="BMAP_ANIMATION_BOUNCE">
+                            <bm-label content="中国计量大学"
                                       :labelStyle="{color: 'black', border: '1px solid black', fontSize : '12px'}"
                                       :offset="{width: 0, height: -40}"/>
                         </bm-marker>
@@ -88,6 +105,9 @@ export default {
             map: null,
             showDetailCard: false,
             clickedUID: null,
+            chosenPoint: {},
+            showChooser: false,
+            showCJLU: false,
         }
     },
     beforeCreate() {
@@ -129,11 +149,13 @@ export default {
             this.showMarker = true
 
             this.openDetailCard(uid)
-            this.zoom = 18
+            // this.zoom = 18
             this.center = place.location
         },
 
         changePage() {
+            this.showChooser = false
+            this.showCJLU = false
             this.showPoint = false
             this.showMarker = true
             this.closeDetailCard()
@@ -150,6 +172,8 @@ export default {
             this.showDetailCard = true
         },
         closeDetailCard() {
+            this.showCJLU = false
+            this.showChooser = false
             this.showDetailCard = false
         },
 
@@ -157,6 +181,19 @@ export default {
             this.openDetailCard(place.uid)
             this.center = place.location
             this.content = place.name
+        },
+
+        choosePoint() {
+            this.showCJLU = false
+            this.showChooser = true
+            this.chosenPoint = {lng: this.center.lng + 0.005, lat: this.center.lat}
+        },
+        afterDrag({point}) {
+            this.chosenPoint = point
+        },
+        toShowCJLU() {
+            this.showChooser = false
+            this.showCJLU = true
         },
     }
 }

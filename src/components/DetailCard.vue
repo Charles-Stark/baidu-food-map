@@ -85,7 +85,7 @@
                         @change="originChanged"
                 >
                     <a-select-option :value="0">中国计量大学</a-select-option>
-                    <a-select-option :value="1">在地图上点击一处...</a-select-option>
+                    <a-select-option :value="1">在地图拖动以选择...</a-select-option>
                 </a-select>
             </div>
             <div>
@@ -145,7 +145,7 @@ export default {
         customerServiceOutlined,
         teamOutlined,
     },
-    props: ['uid', 'location'],
+    props: ['uid', 'location', 'chosenPoint'],
     data() {
         return {
             result: {},
@@ -162,7 +162,7 @@ export default {
                     tab: '出行',
                 }
             ],
-            key: 'tab3',
+            key: 'tab1',
             transportType: 'driving',
             traffic_condition_str: ['暂无路况信息', '畅通', '缓行', '拥堵', '严重拥堵'],
             distance: 0,
@@ -178,6 +178,9 @@ export default {
     methods: {
         onTabChange(value) {
             this.key = value;
+            if (value === 'tab3') {
+                this.$emit('showCJLU')
+            }
         },
         closeCard() {
             this.$emit('closeCard')
@@ -211,9 +214,9 @@ export default {
         },
         originChanged() {
             if (this.originChoice) {
-                this.origin = {lng: '121.369036', lat: '30.327401'}
-                this.origin_uid = ''
+                this.$emit('choosePoint')
             } else {
+                this.$emit('showCJLU')
                 this.origin = {lng: '120.369036', lat: '30.327401'}
                 this.origin_uid = 'd8dba01f8edc68ed3be4a621'
             }
@@ -227,9 +230,16 @@ export default {
         this.getRoutes()
     },
     watch: {
-        "uid"(newVal, oldVal) {
+        "uid"(newVal) {
             this.getDetail(newVal)
             this.getRoutes()
+        },
+        "chosenPoint"() {
+            if (this.originChoice) {
+                this.origin = this.chosenPoint
+                this.origin_uid = ''
+                this.getRoutes()
+            }
         }
     }
 }
