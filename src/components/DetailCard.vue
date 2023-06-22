@@ -21,7 +21,7 @@
             </span>
         </template>
 
-        <div class="general" v-if="key === 'tab1'">
+        <div class="tab" v-if="key === 'tab1'">
             <div v-if="detailInfo.content_tag">
                 <a-tag color="purple" v-for="tag in detailInfo.content_tag.split(';')">{{ tag }}</a-tag>
             </div>
@@ -50,7 +50,7 @@
             </div>
         </div>
 
-        <div v-if="key === 'tab2'">
+        <div v-if="key === 'tab2'" class="tab">
             <div v-if="detailInfo.overall_rating"><span class="label">总体评分:&nbsp;&nbsp;</span>
                 <a-rate :value="Number(detailInfo.overall_rating)" allow-half disabled/>&nbsp;&nbsp;
                 {{ detailInfo.overall_rating }}
@@ -69,17 +69,56 @@
             </div>
         </div>
 
-        <div v-if="key === 'tab3'">
-            <a-radio-group v-model:value="transportType" @change="getRoutes">
-                <a-radio-button value="driving">驾车</a-radio-button>
-                <a-radio-button value="riding">骑行</a-radio-button>
-                <a-radio-button value="walking">步行</a-radio-button>
-            </a-radio-group>
+        <div class="tab" v-if="key === 'tab3'">
+            <div>
+                <a-radio-group v-model:value="transportType" @change="getRoutes">
+                    <a-radio-button value="driving">驾车</a-radio-button>
+                    <a-radio-button value="riding">骑行</a-radio-button>
+                    <a-radio-button value="walking">步行</a-radio-button>
+                </a-radio-group>
+            </div>
+            <div>
+                <span class="label">起点:&nbsp;&nbsp;&nbsp;</span>
+                <a-select
+                        v-model:value="originChoice"
+                        style="width: 350px"
+                        @change="originChanged"
+                >
+                    <a-select-option :value="0">中国计量大学</a-select-option>
+                    <a-select-option :value="1">在地图上点击一处...</a-select-option>
+                </a-select>
+            </div>
+            <div>
+                <span class="label">终点:&nbsp;&nbsp;&nbsp;</span>
+                <a-select
+                        :value="result.name"
+                        style="width: 350px"
+                >
+                    <a-select-option :value="result.name">{{ result.name }}</a-select-option>
+                </a-select>
+            </div>
 
-            <br>
-            distance: {{ distance }}<br>
-            duration: {{ duration }}<br>
-            traffic_condition: {{ traffic_condition_str[traffic_condition] }}<br>
+            <div>
+                <span class="label">距离:&nbsp;&nbsp;&nbsp;</span>
+                <span v-if="distance < 1000" class="info">{{ distance.toFixed(0) }}&nbsp;米</span>
+                <span v-else class="info">{{ (distance / 1000).toFixed(0) }}&nbsp;公里</span>
+            </div>
+
+            <div>
+                <span class="label">时间:&nbsp;&nbsp;&nbsp;</span>
+                <span v-if="duration / 60 < 60" class="info">{{ (duration / 60).toFixed(0) }}&nbsp;分钟</span>
+                <span v-else class="info">
+                    {{ Math.floor(duration / 60 / 60) }}&nbsp;小时
+                    <span v-if="(duration / 60 % 60).toFixed(0) > 0">
+                        {{ (duration / 60 % 60).toFixed(0) }}&nbsp;分钟
+                    </span>
+                </span>
+            </div>
+
+            <div v-if="transportType === 'driving'">
+                <span class="label">交通状况:&nbsp;&nbsp;&nbsp;</span>
+                <span class="info">{{ traffic_condition_str[traffic_condition] }}</span>
+            </div>
         </div>
 
     </a-card>
@@ -123,7 +162,7 @@ export default {
                     tab: '出行',
                 }
             ],
-            key: 'tab1',
+            key: 'tab3',
             transportType: 'driving',
             traffic_condition_str: ['暂无路况信息', '畅通', '缓行', '拥堵', '严重拥堵'],
             distance: 0,
@@ -133,6 +172,7 @@ export default {
             destination: {},
             origin_uid: 'd8dba01f8edc68ed3be4a621',
             destination_uid: '',
+            originChoice: 0,
         }
     },
     methods: {
@@ -147,6 +187,10 @@ export default {
                 .then(res => {
                     this.result = res.data.result
                     this.detailInfo = res.data.result.detail_info
+
+                    this.destination = res.data.result.location
+                    this.destination_uid = res.data.result.uid
+                    this.getRoutes()
                 })
                 .catch(err => console.log(err.message))
         },
@@ -165,6 +209,16 @@ export default {
                 })
                 .catch(err => console.log(err.message))
         },
+        originChanged() {
+            if (this.originChoice) {
+                this.origin = {lng: '121.369036', lat: '30.327401'}
+                this.origin_uid = ''
+            } else {
+                this.origin = {lng: '120.369036', lat: '30.327401'}
+                this.origin_uid = 'd8dba01f8edc68ed3be4a621'
+            }
+            this.getRoutes()
+        },
     },
     mounted() {
         this.getDetail(this.uid)
@@ -175,13 +229,14 @@ export default {
     watch: {
         "uid"(newVal, oldVal) {
             this.getDetail(newVal)
+            this.getRoutes()
         }
     }
 }
 </script>
 
 <style scoped>
-.general div {
+.tab div {
     padding: 8px 0;
 }
 

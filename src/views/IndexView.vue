@@ -103,7 +103,6 @@
 </template>
 
 <script>
-import IndexCard from "@/components/IndexCard.vue";
 import leftCircleOutlined from "@ant-design/icons-vue/lib/icons/LeftCircleOutlined";
 import rightCircleOutlined from "@ant-design/icons-vue/lib/icons/RightCircleOutlined";
 import leftOutlined from "@ant-design/icons-vue/lib/icons/LeftOutlined";
@@ -113,7 +112,6 @@ import compassOutlined from "@ant-design/icons-vue/lib/icons/CompassOutlined";
 export default {
     name: "IndexView",
     components: {
-        IndexCard,
         leftCircleOutlined,
         rightCircleOutlined,
         leftOutlined,
