@@ -14,7 +14,6 @@
             <div>
                 <a-image
                         src="/img/1.jpg"
-                        height="500px"
                         :preview="false"
                         :placeholder="true"
                 />
@@ -22,7 +21,6 @@
             <div>
                 <a-image
                         src="/img/2.jpg"
-                        height="500px"
                         :preview="false"
                         :placeholder="true"
                 />
@@ -30,7 +28,6 @@
             <div>
                 <a-image
                         src="/img/3.jpg"
-                        height="500px"
                         :preview="false"
                         :placeholder="true"
                 />
@@ -38,7 +35,6 @@
             <div>
                 <a-image
                         src="/img/4.jpg"
-                        height="500px"
                         :preview="false"
                         :placeholder="true"
                 />
@@ -234,7 +230,7 @@ export default {
 }
 
 .carousel-container .ant-carousel :deep(.slick-slide) {
-    height: 500px;
+    height: calc(500 * 100vw / 1425);
 }
 
 .carousel-container .ant-carousel :deep(.slick-arrow.custom-slick-arrow) {
